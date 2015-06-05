@@ -11,10 +11,13 @@ using namespace cv;
 
 #define LOOP_NUM 10
 #define MAX_THREADS 10
+#define MILL 1e6
 
 // BUILD ME AS:
 // g++ -o libDetectCpu.so -lc -shared -I/usr/lib/jvm/java-7-openjdk-amd64/include/ -I/usr/lib/jvm/java-7-openjdk-amd64/include/linux/ arrow_cpu.cpp -fPIC `pkg-config opencv --cflags --libs`
 ///////////////////////////single-threading arrows detecting///////////////////////////////
+// for profiling use -lrt flag
+// 
 
 const static Scalar colors[] =  { CV_RGB(0,0,255),
                                   CV_RGB(0,128,255),
@@ -30,6 +33,8 @@ int64 work_begin[MAX_THREADS] = {0};
 int64 work_total[MAX_THREADS] = {0};
 string inputName, outputName, cascadeName;
 
+struct timespec before, after;
+
 static void workBegin(int i = 0)
 {
     work_begin[i] = getTickCount();
@@ -43,6 +48,21 @@ static void workEnd(int i = 0)
 static double getTotalTime(int i = 0)
 {
     return work_total[i] /getTickFrequency() * 1000.;
+}
+
+struct timespec diff(struct timespec start, struct timespec end)
+{
+	struct timespec temp;
+	if ((end.tv_nsec-start.tv_nsec)<0) {
+		temp.tv_sec = end.tv_sec-start.tv_sec-1;
+		temp.tv_nsec = 1000000000 + end.tv_nsec-start.tv_nsec;
+	} else {
+		temp.tv_sec = end.tv_sec-start.tv_sec;
+		temp.tv_nsec = end.tv_nsec-start.tv_nsec;
+	}
+	cout<<"Execution time :"<<(temp.tv_nsec / MILL)<<"ms"<<endl;
+	
+	return temp;
 }
 
 static void detectCPU( Mat& img, vector<Rect>& arrows, CascadeClassifier& cascade, double scale, bool calTime);
@@ -104,12 +124,17 @@ JNIEXPORT void JNICALL Java_hr_foi_tiwo_ObjDec_sendImageForProcessing(JNIEnv *en
 void detectCPU( Mat& img, vector<Rect>& arrows, CascadeClassifier& cascade, double scale, bool calTime)
 {
     if(calTime) workBegin();
+      clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &before);
+    
       Mat cpu_gray, cpu_smallImg( cvRound (img.rows/scale), cvRound(img.cols/scale), CV_8UC1 );
       cvtColor(img, cpu_gray, CV_BGR2GRAY);
       resize(cpu_gray, cpu_smallImg, cpu_smallImg.size(), 0, 0, INTER_LINEAR);
       equalizeHist(cpu_smallImg, cpu_smallImg);
       cascade.detectMultiScale(cpu_smallImg, arrows, 1.1, 3, 0 | CV_HAAR_SCALE_IMAGE, Size(30, 30), Size(0, 0));
+      clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &after);
+    
     if(calTime) workEnd();
+    diff(before, after);
 }
 
 void Draw(Mat& img, vector<Rect>& arrows, double scale)
@@ -132,3 +157,4 @@ void Draw(Mat& img, vector<Rect>& arrows, double scale)
     }
     imwrite("res-from-cpp.png", img);
 }
+
