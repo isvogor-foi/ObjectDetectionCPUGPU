@@ -9,7 +9,7 @@
 using namespace std;
 using namespace cv;
 
-#define LOOP_NUM 10
+#define LOOP_NUM 100
 #define MAX_THREADS 10
 #define MILL 1e6
 
@@ -53,14 +53,16 @@ static double getTotalTime(int i = 0)
 struct timespec diff(struct timespec start, struct timespec end)
 {
 	struct timespec temp;
-	if ((end.tv_nsec-start.tv_nsec)<0) {
+	if ((end.tv_nsec-start.tv_nsec)<0) 
+  {
 		temp.tv_sec = end.tv_sec-start.tv_sec-1;
 		temp.tv_nsec = 1000000000 + end.tv_nsec-start.tv_nsec;
-	} else {
-		temp.tv_sec = end.tv_sec-start.tv_sec;
+	} else 
+  {
+  	temp.tv_sec = end.tv_sec-start.tv_sec;
 		temp.tv_nsec = end.tv_nsec-start.tv_nsec;
 	}
-	cout<<"Execution time :"<<(temp.tv_nsec / MILL)<<"ms"<<endl;
+	cout<<"Execution time: "<<(temp.tv_nsec / MILL)<<"ms"<<endl;
 	
 	return temp;
 }
@@ -91,9 +93,10 @@ static int arrowdetect_one_thread(bool useCPU, double scale, Mat image)
     
     for(int i = 0; i <= LOOP_NUM; i++)
     {
-	cout << i << ", ";
-	detectCPU(image, arrows, cpu_cascade, scale, i!=0);
+    	cout << i << ", ";
+    	detectCPU(image, arrows, cpu_cascade, scale, i!=0);
     }
+
     cout << "done!" << endl;
     cout << "average CPU time (noCamera) : ";
     cout << getTotalTime() / LOOP_NUM << " ms" << endl;
@@ -131,9 +134,11 @@ void detectCPU( Mat& img, vector<Rect>& arrows, CascadeClassifier& cascade, doub
       resize(cpu_gray, cpu_smallImg, cpu_smallImg.size(), 0, 0, INTER_LINEAR);
       equalizeHist(cpu_smallImg, cpu_smallImg);
       cascade.detectMultiScale(cpu_smallImg, arrows, 1.1, 3, 0 | CV_HAAR_SCALE_IMAGE, Size(30, 30), Size(0, 0));
+
       clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &after);
     
     if(calTime) workEnd();
+
     diff(before, after);
 }
 

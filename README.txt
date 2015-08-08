@@ -6,7 +6,7 @@ For CPU object detection:
  - in ObjDec.java uncomment: System.loadLibrary("DetectCpu");
 
 For GPU object detection:
- - combile C++ code like: g++ -o libDetectGpu.so -lc -shared -I/usr/lib/jvm/java-7-openjdk-amd64/include/ -I/usr/lib/jvm/java-7-openjdk-amd64/include/linux/ arrow_gpu.cpp -fPIC `pkg-config opencv --cflags --libs`
+ - compile C++ code like: g++ -o libDetectGpu.so -lc -shared -I/usr/lib/jvm/java-7-openjdk-amd64/include/ -I/usr/lib/jvm/java-7-openjdk-amd64/include/linux/ arrow_gpu.cpp -fPIC `pkg-config opencv --cflags --libs`
  - in ObjDec.java uncomment: System.loadLibrary("DetectGpu");
 
 For GPU object detection:
@@ -16,3 +16,5 @@ The project depends on:
  - OpenCL
  
 For OpenCL CPU Haar detection use haarcascade_10.xml or cascade_boost.xml, but for GPU use haarcascade_10.xml (for some reason it doesn't support boost layout for XML Haar classifier)
+
+When installing OpenCV, make sure you installed default-jvm and also build with shared libraries ON (if necessary, first compile with shared libs off, and then, for java purposes, use classical java OpenCV build instructions for make -j8). Shared libs are located in /usr/local/lib, (one you need is libopencv_ocl.so).
