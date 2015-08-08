@@ -18,8 +18,8 @@ public class ObjDec {
 	
 	static{
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-		System.loadLibrary("DetectCpu");
-		//System.loadLibrary("DetectGpu");
+		//System.loadLibrary("DetectCpu");
+		System.loadLibrary("DetectGpu");
 	}
 
 	public static void main(String[] args) {
