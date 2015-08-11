@@ -1,5 +1,7 @@
 package hr.foi.tiwo;
 
+import hr.foi.tiwo.objectdetection.events.ObjectDetectedListener;
+
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
@@ -15,13 +17,18 @@ import org.opencv.core.Mat;
 public class ObjDec {
 	
 	public native static void sendImageForProcessing(long image, int width, int height);
+	public static ObjectDetectedListener objectDetectedListener;
 	
 	static{
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-		//System.loadLibrary("DetectCpu");
-		System.loadLibrary("DetectGpu");
+		System.loadLibrary("DetectCpu");
+		//System.loadLibrary("DetectGpu");
 	}
-
+	
+	public static void addListener(ObjectDetectedListener listener){
+		objectDetectedListener = listener;
+	}
+	
 	public static void main(String[] args) {
 
 	    BufferedImage img = null;
@@ -35,9 +42,12 @@ public class ObjDec {
 	    
 	    // result 
 	    BufferedImage i = mat2Img(matImage);
-
+	    // find out if object is detected...
+	    //dispatch event:
+	    objectDetectedListener.ObjectDetected();
         
 		File outputfile = new File("java-output.png");
+		
 		try {
 			ImageIO.write(i, "png", outputfile);
 		} catch (IOException e) { }
