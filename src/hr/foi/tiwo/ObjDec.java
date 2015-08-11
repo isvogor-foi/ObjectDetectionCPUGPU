@@ -28,6 +28,9 @@ public class ObjDec {
 	public static void addListener(ObjectDetectedListener listener){
 		objectDetectedListener = listener;
 	}
+	public static void setObjectToDetect(String objectName){
+		// currently will remain unsupported
+	}
 	
 	public static void main(String[] args) {
 
