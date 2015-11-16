@@ -12,7 +12,7 @@ import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 
-public class OdInitializerS1 {
+public class OdInitializerCpu {
 	
 	public native void sendImageForProcessing(long image, int width, int height);
 	private static String defaultPath = "/home/ivan/git/ObjectDetectionCPUGPU/";
@@ -24,11 +24,11 @@ public class OdInitializerS1 {
 	}
 	
 
-	public void detectOnCPU() {
+	public void detect(String path) {
 
 	    BufferedImage img = null;
 	    try {
-	        img = ImageIO.read(new File("/home/ivan/Dev/CPP/OCL/imgs/1.png"));
+	        img = ImageIO.read(new File(path));
 	    } catch (IOException e) { }
 	    
 	    Mat matImage = ObjDec.img2Mat(img);
@@ -41,13 +41,14 @@ public class OdInitializerS1 {
 	    //dispatch event:
 	    System.out.println("Done with detection...");
 	    
-	    
+	    /*
 		File outputfile = new File("java-output.png");
 		
 		try {
 			ImageIO.write(i, "png", outputfile);
 		} catch (IOException e) { }
 		System.out.println("Done!");
+		*/
 	    
 	}
 	

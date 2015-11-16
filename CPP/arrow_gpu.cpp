@@ -9,7 +9,7 @@
 using namespace std;
 using namespace cv;
 
-#define LOOP_NUM 10
+#define LOOP_NUM 0
 #define MAX_THREADS 10
 #define MILL 1e6
 
@@ -97,7 +97,7 @@ static int arrowdetect_one_thread(bool useCPU, double scale, Mat image)
     }
     cout << "done!" << endl;
     //cout << "average GPU time (noCamera) : ";
-    //cout << getTotalTime() / LOOP_NUM << " ms" << endl;
+    //cout << getTotalTime() << " ms" << endl;
     cout << "Detected elements: "<<arrows.size()<<endl;
 
     Draw(image, arrows, scale);
